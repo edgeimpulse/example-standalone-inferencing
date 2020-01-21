@@ -1,4 +1,4 @@
-NAME = utensor-sanity
+NAME = edge-impulse-standalone
 
 CC ?= g++
 CFLAGS ?= -Wall

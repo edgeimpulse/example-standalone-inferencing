@@ -5,8 +5,7 @@ rm -f *.gcno
 mkdir -p out
 rm -f out/*
 
-rm -rf build && rm -rf edge-impulse-sdk && rm -rf model-parameters && rm -rf utensor-model
-unzip deploy.zip
+rm -rf build
 
 rm -f edge-impulse-sdk/utensor/CMakeCache.txt
 
@@ -19,14 +18,14 @@ make
 
 echo "Building uTensor library OK"
 
-echo "Building sanity checker"
+echo "Building standalone classifier"
 
 cd ../..
 
-# build the uTensor classifier
+# build the Edge Impulse classifier
 make
 
-echo "Building sanity checker OK"
+echo "Building standalone classifier OK"
 
 # clear up
 rm -f *.gcda
