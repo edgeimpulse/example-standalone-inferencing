@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     numpy::signal_from_buffer(&raw_features[0], raw_features.size(), &signal);
 
     EI_IMPULSE_ERROR res = run_classifier(&signal, &result, true);
-    printf("res: %d\n", res);
+    printf("run_classifier returned: %d\n", res);
 
     printf("Begin output\n");
 
