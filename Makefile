@@ -1,6 +1,6 @@
 NAME = edge-impulse-standalone
 
-CC ?= g++
+CC = clang++
 CFLAGS ?= -Wall
 
 MACROS +=
@@ -15,7 +15,6 @@ CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/core
 CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/loaders
 CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/ops
 CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/util
-CFLAGS += edge-impulse-sdk/utensor/libutensor.a
 CFLAGS += -Imodel-parameters
 CFLAGS += -Iutensor-model
 CFLAGS += -Iedge-impulse-sdk/anomaly
@@ -25,6 +24,7 @@ CFLAGS += -Iedge-impulse-sdk/dsp/kissfft
 CFLAGS += -Iedge-impulse-sdk/porting
 CFLAGS += -lc++
 CFLAGS += -fprofile-arcs -ftest-coverage
+CFLAGS += -lm
 
 LFLAGS += --coverage
 
@@ -36,7 +36,7 @@ build:
 	mkdir -p build
 	rm -rf *.gcda
 	rm -rf *.gcno
-	$(CC) $(MACROS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/porting/posix/*.cpp utensor-model/*.cpp -o build/$(NAME)
+	$(CC) $(MACROS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/porting/posix/*.cpp utensor-model/*.cpp -o build/$(NAME) -Ledge-impulse-sdk/utensor -lutensor
 	rm -rf *.gcda
 	rm -rf *.gcno
 
