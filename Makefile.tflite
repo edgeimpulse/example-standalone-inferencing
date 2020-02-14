@@ -1,0 +1,51 @@
+NAME = edge-impulse-standalone
+
+CC = clang
+CXX = clang++
+CFLAGS ?= -Wall
+
+MACROS += -DTF_LITE_DISABLE_X86_NEON
+CXXFLAGS += -std=c++11
+CFLAGS += -I.
+CFLAGS += -Isource
+CFLAGS += -Iedge-impulse-sdk/
+CFLAGS += -Iedge-impulse-sdk/utensor
+CFLAGS += -Iedge-impulse-sdk/utensor/src
+CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor
+CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/core
+CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/loaders
+CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/ops
+CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/util
+CFLAGS += -Iedge-impulse-sdk/tensorflow
+CFLAGS += -Iedge-impulse-sdk/third_party
+CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers
+CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include
+CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include/flatbuffers
+CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/
+CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/fixedpoint
+CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/internal
+CFLAGS += -Imodel-parameters
+CFLAGS += -Itflite-model
+CFLAGS += -Iedge-impulse-sdk/anomaly
+CFLAGS += -Iedge-impulse-sdk/classifier
+CFLAGS += -Iedge-impulse-sdk/dsp
+CFLAGS += -Iedge-impulse-sdk/dsp/kissfft
+CFLAGS += -Iedge-impulse-sdk/porting
+CFLAGS += -lc++
+CFLAGS += -lm
+
+all: build
+
+.PHONY: build clean
+
+build:
+	mkdir -p build
+	rm -rf *.gcda
+	rm -rf *.gcno
+	$(CC) -c $(MACROS) $(CFLAGS) $(LFLAGS) edge-impulse-sdk/tensorflow/lite/c/c_api_internal.c -o build/c_api_internal.o
+	$(CXX) $(MACROS) $(CXXFLAGS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/tensorflow/lite/kernels/*.cc edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/kernels/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/memory_planner/*.cc edge-impulse-sdk/tensorflow/lite/core/api/*.cc edge-impulse-sdk/porting/posix/*.c* build/c_api_internal.o -o build/$(NAME)
+	rm -rf *.gcda
+	rm -rf *.gcno
+
+clean:
+	rm $(NAME)

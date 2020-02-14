@@ -1,33 +1,40 @@
 set -e
+SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-rm -f *.gcda
-rm -f *.gcno
-mkdir -p out
-rm -f out/*
+rm -f $SCRIPTPATH/*.gcda
+rm -f $SCRIPTPATH/*.gcno
+mkdir -p $SCRIPTPATH/out
+rm -f $SCRIPTPATH/out/*
 
-rm -rf build
+rm -rf $SCRIPTPATH/build
 
-rm -f edge-impulse-sdk/utensor/CMakeCache.txt
+rm -f $SCRIPTPATH/edge-impulse-sdk/utensor/CMakeCache.txt
 
-echo "Building uTensor library"
+if [ -d $SCRIPTPATH/utensor-model/ ]; then
+    echo "Building uTensor library"
 
-# build uTensor library file
-cd edge-impulse-sdk/utensor
-cmake .
-make
+    # build uTensor library file
+    cd $SCRIPTPATH/edge-impulse-sdk/utensor
+    cmake .
+    make
 
-echo "Building uTensor library OK"
+    echo "Building uTensor library OK"
+fi
 
 echo "Building standalone classifier"
 
-cd ../..
+cd $SCRIPTPATH
 
 # build the Edge Impulse classifier
-make
+if [ -d $SCRIPTPATH/utensor-model/ ]; then
+    make -f Makefile.utensor
+else
+    make -f Makefile.tflite
+fi
 
 echo "Building standalone classifier OK"
 
 # clear up
-rm -f *.gcda
-rm -f *.gcno
-rm -rf out
+rm -f $SCRIPTPATH/*.gcda
+rm -f $SCRIPTPATH/*.gcno
+rm -rf $SCRIPTPATH/out
