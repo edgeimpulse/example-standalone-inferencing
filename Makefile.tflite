@@ -43,7 +43,7 @@ build:
 	rm -rf *.gcda
 	rm -rf *.gcno
 	$(CC) -c $(MACROS) $(CFLAGS) $(LFLAGS) edge-impulse-sdk/tensorflow/lite/c/c_api_internal.c -o build/c_api_internal.o
-	$(CXX) $(MACROS) $(CXXFLAGS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/tensorflow/lite/kernels/*.cc edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/kernels/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/memory_planner/*.cc edge-impulse-sdk/tensorflow/lite/core/api/*.cc edge-impulse-sdk/porting/posix/*.c* build/c_api_internal.o -o build/$(NAME)
+	$(CXX) $(MACROS) $(CXXFLAGS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/tensorflow/lite/kernels/*.cc edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/kernels/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/memory_planner/*.cc edge-impulse-sdk/tensorflow/lite/core/api/*.cc ./edge-impulse-sdk/dsp/memory.cpp edge-impulse-sdk/porting/posix/*.c* build/c_api_internal.o -o build/$(NAME)
 	rm -rf *.gcda
 	rm -rf *.gcno
 

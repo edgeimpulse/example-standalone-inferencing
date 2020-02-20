@@ -36,7 +36,7 @@ build:
 	mkdir -p build
 	rm -rf *.gcda
 	rm -rf *.gcno
-	$(CC) $(MACROS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/porting/posix/*.cpp utensor-model/*.cpp -o build/$(NAME) -Ledge-impulse-sdk/utensor -lutensor
+	$(CC) $(MACROS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/porting/posix/*.cpp utensor-model/*.cpp edge-impulse-sdk/dsp/memory.cpp -o build/$(NAME) -Ledge-impulse-sdk/utensor -lutensor
 	rm -rf *.gcda
 	rm -rf *.gcno
 
