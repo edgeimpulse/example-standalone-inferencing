@@ -23,10 +23,7 @@ CFLAGS += -Iedge-impulse-sdk/dsp
 CFLAGS += -Iedge-impulse-sdk/dsp/kissfft
 CFLAGS += -Iedge-impulse-sdk/porting
 CFLAGS += -lc++
-CFLAGS += -fprofile-arcs -ftest-coverage
 CFLAGS += -lm
-
-LFLAGS += --coverage
 
 all: build
 
