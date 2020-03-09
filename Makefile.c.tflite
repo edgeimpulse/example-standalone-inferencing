@@ -1,0 +1,64 @@
+NAME = edge-impulse-standalone
+
+CC = clang
+CXX = clang++
+CFLAGS ?= -Wall
+
+MACROS += -DTF_LITE_DISABLE_X86_NEON
+MACROS += -DEIDSP_SIGNAL_C_FN_POINTER=1
+CXXFLAGS += -std=c++11
+CXXFLAGS += -I.
+CXXFLAGS += -Isource
+CXXFLAGS += -Iedge-impulse-sdk/
+CXXFLAGS += -Iedge-impulse-sdk/utensor
+CXXFLAGS += -Iedge-impulse-sdk/utensor/src
+CXXFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor
+CXXFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/core
+CXXFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/loaders
+CXXFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/ops
+CXXFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/util
+CXXFLAGS += -Iedge-impulse-sdk/tensorflow
+CXXFLAGS += -Iedge-impulse-sdk/third_party
+CXXFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers
+CXXFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include
+CXXFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include/flatbuffers
+CXXFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/
+CXXFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/fixedpoint
+CXXFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/internal
+CXXFLAGS += -Imodel-parameters
+CXXFLAGS += -Itflite-model
+CXXFLAGS += -Iedge-impulse-sdk/anomaly
+CXXFLAGS += -Iedge-impulse-sdk/classifier
+CXXFLAGS += -Iedge-impulse-sdk/dsp
+CXXFLAGS += -Iedge-impulse-sdk/dsp/kissfft
+CXXFLAGS += -Iedge-impulse-sdk/porting
+CXXFLAGS += -lc++
+CXXFLAGS += -lm
+
+CFLAGS += -I.
+CFLAGS += -Isource
+CFLAGS += -Iedge-impulse-sdk/
+CFLAGS += -Imodel-parameters
+CFLAGS += -Itflite-model
+CFLAGS += -Iedge-impulse-sdk/anomaly
+CFLAGS += -Iedge-impulse-sdk/classifier
+CFLAGS += -Iedge-impulse-sdk/dsp
+CFLAGS += -Iedge-impulse-sdk/dsp/kissfft
+CFLAGS += -Iedge-impulse-sdk/porting
+CFLAGS += -lc++
+CFLAGS += -lm
+
+all: build
+
+.PHONY: build clean
+
+build/libedgeimpulse.so:
+	mkdir -p build
+	$(CC) -c $(MACROS) $(CFLAGS) $(LFLAGS) edge-impulse-sdk/tensorflow/lite/c/c_api_internal.c -o build/c_api_internal.o
+	$(CXX) $(MACROS) $(CXXFLAGS) $(LFLAGS) -shared edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/tensorflow/lite/kernels/*.cc edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/kernels/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/*.cc edge-impulse-sdk/tensorflow/lite/experimental/micro/memory_planner/*.cc edge-impulse-sdk/tensorflow/lite/core/api/*.cc ./edge-impulse-sdk/dsp/memory.cpp edge-impulse-sdk/porting/posix/*.c* edge-impulse-sdk/classifier/*.cpp build/c_api_internal.o -o build/libedgeimpulse.so
+
+build: build/libedgeimpulse.so
+	$(CC) $(MACROS) $(CFLAGS) $(LFLAGS) source/*.c build/libedgeimpulse.so -o build/$(NAME)
+
+clean:
+	rm -rf build/
