@@ -9,13 +9,6 @@ CXXFLAGS += -std=c++11
 CFLAGS += -I.
 CFLAGS += -Isource
 CFLAGS += -Iedge-impulse-sdk/
-CFLAGS += -Iedge-impulse-sdk/utensor
-CFLAGS += -Iedge-impulse-sdk/utensor/src
-CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor
-CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/core
-CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/loaders
-CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/ops
-CFLAGS += -Iedge-impulse-sdk/utensor/src/uTensor/util
 CFLAGS += -Iedge-impulse-sdk/tensorflow
 CFLAGS += -Iedge-impulse-sdk/third_party
 CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers
