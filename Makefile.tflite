@@ -17,6 +17,7 @@ CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include/flatbuffers
 CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/
 CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/fixedpoint
 CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/internal
+CFLAGS += -Iedge-impulse-sdk/third_party/ruy
 CFLAGS += -Imodel-parameters
 CFLAGS += -Itflite-model
 CFLAGS += -Iedge-impulse-sdk/anomaly
