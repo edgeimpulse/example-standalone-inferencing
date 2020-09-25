@@ -1,7 +1,7 @@
 NAME = edge-impulse-standalone
 
-CC = clang
-CXX = clang++
+CC = gcc
+CXX = g++
 CFLAGS ?= -Wall
 
 MACROS += -DTF_LITE_DISABLE_X86_NEON
@@ -25,7 +25,7 @@ CFLAGS += -Iedge-impulse-sdk/classifier
 CFLAGS += -Iedge-impulse-sdk/dsp
 CFLAGS += -Iedge-impulse-sdk/dsp/kissfft
 CFLAGS += -Iedge-impulse-sdk/porting
-CFLAGS += -lc++
+CFLAGS += -lstdc++
 CFLAGS += -lm
 CFLAGS += -Os
 CFLAGS += -DNDEBUG
