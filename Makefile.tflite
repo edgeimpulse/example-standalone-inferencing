@@ -30,7 +30,6 @@ CFLAGS += -lm
 CFLAGS += -Os
 CFLAGS += -DNDEBUG
 CFLAGS += -g
-CFLAGS += -mno-unaligned-access
 
 all: build
 
