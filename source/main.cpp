@@ -13,13 +13,33 @@ std::string trim(const std::string& str) {
     return str.substr(first, (last - first + 1));
 }
 
+std::string read_file(const char *filename) {
+    FILE *f = (FILE*)fopen(filename, "r");
+    if (!f) {
+        printf("Cannot open file %s\n", filename);
+        return "";
+    }
+    fseek(f, 0, SEEK_END);
+    size_t size = ftell(f);
+    std::string ss;
+    ss.resize(size);
+    rewind(f);
+    fread(&ss[0], 1, size, f);
+    fclose(f);
+    return ss;
+}
+
 int main(int argc, char **argv) {
     if (argc != 2) {
-        printf("Requires one parameter (a comma-separated list of raw features)\n");
+        printf("Requires one parameter (a comma-separated list of raw features, or a file pointing at raw features)\n");
         return 1;
     }
 
     std::string input = argv[1];
+    if (!strchr(argv[1], ' ') && strchr(argv[1], '.')) { // looks like a filename
+        input = read_file(argv[1]);
+    }
+
     std::istringstream ss(input);
     std::string token;
 
@@ -27,6 +47,12 @@ int main(int argc, char **argv) {
 
     while (std::getline(ss, token, ',')) {
         raw_features.push_back(std::stof(trim(token)));
+    }
+
+    if (raw_features.size() != EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE) {
+        printf("The size of your 'features' array is not correct. Expected %d items, but had %lu\n",
+            EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE, raw_features.size());
+        return 1;
     }
 
     ei_impulse_result_t result;
