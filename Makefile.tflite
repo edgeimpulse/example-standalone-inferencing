@@ -31,18 +31,20 @@ CFLAGS += -Os
 CFLAGS += -DNDEBUG
 CFLAGS += -g
 
+ifeq ($(OS),Windows_NT)
+	MKDIR_BUILD = if not exist build mkdir build
+else
+	MKDIR_BUILD = mkdir -p build
+endif
+
 all: build
 
 .PHONY: build clean
 
 build:
-	mkdir -p build
-	rm -rf *.gcda
-	rm -rf *.gcno
+	$(MKDIR_BUILD)
 	$(CC) -c $(MACROS) $(CFLAGS) $(LFLAGS) edge-impulse-sdk/tensorflow/lite/c/common.c -o build/common.o
 	$(CXX) $(MACROS) $(CXXFLAGS) $(CFLAGS) $(LFLAGS) source/*.cpp edge-impulse-sdk/dsp/kissfft/*.cpp edge-impulse-sdk/dsp/dct/*.cpp edge-impulse-sdk/tensorflow/lite/kernels/*.cc edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc edge-impulse-sdk/tensorflow/lite/micro/kernels/*.cc edge-impulse-sdk/tensorflow/lite/micro/*.cc edge-impulse-sdk/tensorflow/lite/micro/memory_planner/*.cc edge-impulse-sdk/tensorflow/lite/core/api/*.cc ./edge-impulse-sdk/dsp/memory.cpp edge-impulse-sdk/porting/posix/*.c* tflite-model/*.cpp build/common.o -o build/$(NAME)
-	rm -rf *.gcda
-	rm -rf *.gcno
 
 clean:
 	rm $(NAME)
