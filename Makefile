@@ -75,11 +75,12 @@ app: $(COBJECTS) $(CXXOBJECTS) $(CCOBJECTS)
 	$(MKDIR_BUILD)
 	$(CXX) $(COBJECTS) $(CXXOBJECTS) $(CCOBJECTS) -o build/$(NAME) $(LDFLAGS)
 
+clean:
 ifeq ($(OS),Windows_NT)
-clean:
-	echo $(subst /,\,$(patsubst %.c,%.o,$(CSOURCES)))
+	del /Q $(subst /,\,$(patsubst %.c,%.o,$(CSOURCES))) >nul 2>&1 || exit 0
+	del /Q $(subst /,\,$(patsubst %.cpp,%.o,$(CXXSOURCES))) >nul 2>&1 || exit 0
+	del /Q $(subst /,\,$(patsubst %.cc,%.o,$(CCSOURCES))) >nul 2>&1 || exit 0
 else
-clean:
 	rm -f $(COBJECTS)
 	rm -f $(CCOBJECTS)
 	rm -f $(CXXOBJECTS)
