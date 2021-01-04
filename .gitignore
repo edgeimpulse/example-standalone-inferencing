@@ -5,3 +5,4 @@ tflite-model/
 model-parameters/
 edge-impulse-sdk
 deploy.zip
+*.o
