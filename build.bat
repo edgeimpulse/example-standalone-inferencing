@@ -20,6 +20,8 @@ mingw32-make CC=gcc -j
 
 echo "Building standalone classifier OK"
 
+exit /b 0
+
 :MISSINGMINGW32
 echo Cannot find 'mingw32-make' or 'gcc' in your PATH. Install MinGW-W64 to continue.
 echo Download link: https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download
