@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include "ei_run_classifier.h"
