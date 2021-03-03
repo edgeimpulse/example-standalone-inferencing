@@ -2,7 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include <sstream>
-#include "ei_run_classifier.h"
+#include "edge-impulse-sdk/classifier/ei_run_classifier.h"
 
 std::string trim(const std::string& str) {
     size_t first = str.find_first_not_of(' ');
