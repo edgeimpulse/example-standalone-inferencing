@@ -4,6 +4,10 @@
 #include <sstream>
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"
 
+#if EI_CLASSIFIER_OBJECT_DETECTION == 1
+#warning "For object detection models, consider https://github.com/edgeimpulse/example-standalone-inferencing-linux which has full hardware acceleration"
+#endif
+
 std::string trim(const std::string& str) {
     size_t first = str.find_first_not_of(' ');
     if (std::string::npos == first)
@@ -66,6 +70,16 @@ int main(int argc, char **argv) {
 
     printf("Begin output\n");
 
+#if EI_CLASSIFIER_OBJECT_DETECTION == 1
+    for (size_t ix = 0; ix < EI_CLASSIFIER_OBJECT_DETECTION_COUNT; ix++) {
+        auto bb = result.bounding_boxes[ix];
+        if (bb.value == 0) {
+            continue;
+        }
+
+        printf("%s (%f) [ x: %u, y: %u, width: %u, height: %u ]\n", bb.label, bb.value, bb.x, bb.y, bb.width, bb.height);
+    }
+#else
     // print the predictions
     printf("[");
     for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
@@ -82,6 +96,7 @@ int main(int argc, char **argv) {
     printf("%.3f", result.anomaly);
 #endif
     printf("]\n");
+#endif
 
     printf("End output\n");
 }
