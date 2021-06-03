@@ -5,26 +5,6 @@ CXX ?= g++
 
 CFLAGS += -Wall -g -DTF_LITE_DISABLE_X86_NEON=1 -Wno-strict-aliasing
 CFLAGS += -I.
-CFLAGS += -Isource
-CFLAGS += -Iedge-impulse-sdk/
-CFLAGS += -Iedge-impulse-sdk/tensorflow
-CFLAGS += -Iedge-impulse-sdk/third_party
-CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers
-CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include
-CFLAGS += -Iedge-impulse-sdk/third_party/flatbuffers/include/flatbuffers
-CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/
-CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/fixedpoint
-CFLAGS += -Iedge-impulse-sdk/third_party/gemmlowp/internal
-CFLAGS += -Iedge-impulse-sdk/third_party/ruy
-CFLAGS += -Imodel-parameters
-CFLAGS += -Itflite-model
-CFLAGS += -Iedge-impulse-sdk/anomaly
-CFLAGS += -Iedge-impulse-sdk/classifier
-CFLAGS += -Iedge-impulse-sdk/dsp
-CFLAGS += -Iedge-impulse-sdk/dsp/kissfft
-CFLAGS += -Iedge-impulse-sdk/porting
-CFLAGS += -Iedge-impulse-sdk/CMSIS/Core/Include
-CFLAGS += -Iedge-impulse-sdk/CMSIS/DSP/Include
 CFLAGS += -Os
 CFLAGS += -DNDEBUG
 CFLAGS += -g
@@ -40,7 +20,7 @@ CFLAGS += -Wno-unknown-attributes
 CFLAGS += -DEI_CLASSIFIER_TFLITE_ENABLE_CMSIS_NN=1 -D__ARM_FEATURE_DSP=1 -D__GNUC_PYTHON__=1
 CFLAGS += -Iedge-impulse-sdk/CMSIS/NN/Include/
 CFLAGS += -Iedge-impulse-sdk/CMSIS/DSP/PrivateInclude/
-CSOURCES += $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ActivationFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/BasicMathFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ConcatenationFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ConvolutionFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/PoolingFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ReshapeFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/*.c)
+CSOURCES += $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ActivationFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/BasicMathFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ConcatenationFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ConvolutionFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/PoolingFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/ReshapeFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/*.c) $(wildcard edge-impulse-sdk/CMSIS/NN/Source/SVDFunctions/*.c)
 endif
 
 COBJECTS := $(patsubst %.c,%.o,$(CSOURCES))
