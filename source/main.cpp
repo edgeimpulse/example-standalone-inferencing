@@ -6,7 +6,7 @@
 static int get_signal_data(size_t offset, size_t length, float *out_ptr);
 
 // Raw features copied from test sample (Edge Impulse > Model testing)
-static float input_buf[] = { 
+static float input_buf[] = {
     /* Paste your raw features here! */ 
 };
 
