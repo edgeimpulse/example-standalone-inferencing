@@ -7,10 +7,10 @@ NAME = app
 BUILD_PATH = ./build
 
 # Location of main.cpp (must use C++ compiler for main)
-CXXSOURCES = main.cpp
+CXXSOURCES = source/main.cpp
 
-# Search path for header files (ei/ directory)
-CFLAGS += -Iei/
+# Search path for header files (lib/ directory)
+CFLAGS += -Ilib/
 
 # C and C++ Compiler flags
 CFLAGS += -Wall						# Include all warnings
@@ -28,33 +28,33 @@ LDFLAGS += -lm 						# Link to math.h
 LDFLAGS += -lstdc++					# Link to stdc++.h
 
 # Include C source code for required libraries
-CSOURCES += $(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/BasicMathFunctions/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/ComplexMathFunctions/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/FastMathFunctions/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/SupportFunctions/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/*.c) \
-			$(wildcard ei/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/*.c)
+CSOURCES += $(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/TransformFunctions/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/CommonTables/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/BasicMathFunctions/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/ComplexMathFunctions/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/FastMathFunctions/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/SupportFunctions/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/MatrixFunctions/*.c) \
+			$(wildcard lib/edge-impulse-sdk/CMSIS/DSP/Source/StatisticsFunctions/*.c)
 
 # Include C++ source code for required libraries
-CXXSOURCES += 	$(wildcard ei/tflite-model/*.cpp) \
-				$(wildcard ei/edge-impulse-sdk/dsp/kissfft/*.cpp) \
-				$(wildcard ei/edge-impulse-sdk/dsp/dct/*.cpp) \
-				$(wildcard ei/edge-impulse-sdk/dsp/memory.cpp) \
-				$(wildcard ei/edge-impulse-sdk/porting/posix/*.c*) \
-				$(wildcard ei/edge-impulse-sdk/porting/mingw32/*.c*)
+CXXSOURCES += 	$(wildcard lib/tflite-model/*.cpp) \
+				$(wildcard lib/edge-impulse-sdk/dsp/kissfft/*.cpp) \
+				$(wildcard lib/edge-impulse-sdk/dsp/dct/*.cpp) \
+				$(wildcard lib/edge-impulse-sdk/dsp/memory.cpp) \
+				$(wildcard lib/edge-impulse-sdk/porting/posix/*.c*) \
+				$(wildcard lib/edge-impulse-sdk/porting/mingw32/*.c*)
 CCSOURCES +=
 
 # Use TensorFlow Lite for Microcontrollers (TFLM)
 CFLAGS += -DTF_LITE_DISABLE_X86_NEON=1
-CSOURCES +=	ei/edge-impulse-sdk/tensorflow/lite/c/common.c
-CCSOURCES +=	$(wildcard ei/edge-impulse-sdk/tensorflow/lite/kernels/*.cc) \
-				$(wildcard ei/edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc) \
-				$(wildcard ei/edge-impulse-sdk/tensorflow/lite/micro/kernels/*.cc) \
-				$(wildcard ei/edge-impulse-sdk/tensorflow/lite/micro/*.cc) \
-				$(wildcard ei/edge-impulse-sdk/tensorflow/lite/micro/memory_planner/*.cc) \
-				$(wildcard ei/edge-impulse-sdk/tensorflow/lite/core/api/*.cc)
+CSOURCES +=	lib/edge-impulse-sdk/tensorflow/lite/c/common.c
+CCSOURCES +=	$(wildcard lib/edge-impulse-sdk/tensorflow/lite/kernels/*.cc) \
+				$(wildcard lib/edge-impulse-sdk/tensorflow/lite/kernels/internal/*.cc) \
+				$(wildcard lib/edge-impulse-sdk/tensorflow/lite/micro/kernels/*.cc) \
+				$(wildcard lib/edge-impulse-sdk/tensorflow/lite/micro/*.cc) \
+				$(wildcard lib/edge-impulse-sdk/tensorflow/lite/micro/memory_planner/*.cc) \
+				$(wildcard lib/edge-impulse-sdk/tensorflow/lite/core/api/*.cc)
 
 # Include CMSIS-NN if compiling for an Arm target that supports it
 ifeq (${CMSIS_NN}, 1)
@@ -70,16 +70,16 @@ ifeq (${CMSIS_NN}, 1)
 	CFLAGS += -D__GNUC_PYTHON__=1						# Enable CMSIS-DSP intrisics (non-C features)
 
 	# Include C source code for required CMSIS libraries
-	CSOURCES += $(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/ActivationFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/BasicMathFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/ConcatenationFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/ConvolutionFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/PoolingFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/ReshapeFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/*.c) \
-				$(wildcard ei/edge-impulse-sdk/CMSIS/NN/Source/SVDFunctions/*.c)
+	CSOURCES += $(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/ActivationFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/BasicMathFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/ConcatenationFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/ConvolutionFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/FullyConnectedFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/NNSupportFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/PoolingFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/ReshapeFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/SoftmaxFunctions/*.c) \
+				$(wildcard lib/edge-impulse-sdk/CMSIS/NN/Source/SVDFunctions/*.c)
 endif
 
 # Generate names for the output object files (*.o)
