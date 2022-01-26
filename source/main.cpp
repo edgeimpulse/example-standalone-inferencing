@@ -5,9 +5,9 @@
 // Callback function declaration
 static int get_signal_data(size_t offset, size_t length, float *out_ptr);
 
-// Raw features copied from test sample (Edge Impulse > Model testing)
-static float input_buf[] = {
-    /* Paste your raw features here! */ 
+// Raw features copied from test sample
+static const float features[] = {
+    // Copy raw features here (e.g. from the 'Model testing' page)
 };
 
 int main(int argc, char **argv) {
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     EI_IMPULSE_ERROR res;       // Return code from inference
 
     // Calculate the length of the buffer
-    size_t buf_len = sizeof(input_buf) / sizeof(input_buf[0]);
+    size_t buf_len = sizeof(features) / sizeof(features[0]);
 
     // Make sure that the length of the buffer matches expected input length
     if (buf_len != EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE) {
@@ -79,7 +79,7 @@ int main(int argc, char **argv) {
 // Callback: fill a section of the out_ptr buffer when requested
 static int get_signal_data(size_t offset, size_t length, float *out_ptr) {
     for (size_t i = 0; i < length; i++) {
-        out_ptr[i] = (input_buf + offset)[i];
+        out_ptr[i] = (features + offset)[i];
     }
 
     return EIDSP_OK;
