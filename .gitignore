@@ -1,9 +1,9 @@
 build/
 *.gcda
 utensor-model/
-edge-impulse/tflite-model/
-edge-impulse/model-parameters/
-edge-impulse/edge-impulse-sdk/
-edge-impulse/CMakeLists.txt
+tflite-model/
+model-parameters/
+edge-impulse-sdk/
+CMakeLists.txt
 deploy.zip
 *.o
