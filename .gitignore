@@ -3,6 +3,7 @@ build/
 utensor-model/
 tflite-model/
 model-parameters/
-edge-impulse-sdk
+edge-impulse-sdk/
+CMakeLists.txt
 deploy.zip
 *.o

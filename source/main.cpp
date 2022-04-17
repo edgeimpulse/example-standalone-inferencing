@@ -1,102 +1,86 @@
 #include <stdio.h>
-#include <cstring>
-#include <iostream>
-#include <sstream>
+
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"
 
-#if EI_CLASSIFIER_OBJECT_DETECTION == 1
-#warning "For object detection models, consider https://github.com/edgeimpulse/example-standalone-inferencing-linux which has full hardware acceleration"
-#endif
+// Callback function declaration
+static int get_signal_data(size_t offset, size_t length, float *out_ptr);
 
-std::string trim(const std::string& str) {
-    size_t first = str.find_first_not_of(' ');
-    if (std::string::npos == first)
-    {
-        return str;
-    }
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last - first + 1));
-}
-
-std::string read_file(const char *filename) {
-    FILE *f = (FILE*)fopen(filename, "r");
-    if (!f) {
-        printf("Cannot open file %s\n", filename);
-        return "";
-    }
-    fseek(f, 0, SEEK_END);
-    size_t size = ftell(f);
-    std::string ss;
-    ss.resize(size);
-    rewind(f);
-    fread(&ss[0], 1, size, f);
-    fclose(f);
-    return ss;
-}
+// Raw features copied from test sample
+static const float features[] = {
+    // Copy raw features here (e.g. from the 'Model testing' page)
+};
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        printf("Requires one parameter (a comma-separated list of raw features, or a file pointing at raw features)\n");
+    
+    signal_t signal;            // Wrapper for raw input buffer
+    ei_impulse_result_t result; // Used to store inference output
+    EI_IMPULSE_ERROR res;       // Return code from inference
+
+    // Calculate the length of the buffer
+    size_t buf_len = sizeof(features) / sizeof(features[0]);
+
+    // Make sure that the length of the buffer matches expected input length
+    if (buf_len != EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE) {
+        printf("ERROR: The size of the input buffer is not correct.\r\n");
+        printf("Expected %d items, but got %d\r\n", 
+                EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE, 
+                (int)buf_len);
         return 1;
     }
 
-    std::string input = argv[1];
-    if (!strchr(argv[1], ' ') && strchr(argv[1], '.')) { // looks like a filename
-        input = read_file(argv[1]);
-    }
+    // Assign callback function to fill buffer used for preprocessing/inference
+    signal.total_length = EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE;
+    signal.get_data = &get_signal_data;
 
-    std::istringstream ss(input);
-    std::string token;
+    // Perform DSP pre-processing and inference
+    res = run_classifier(&signal, &result, false);
 
-    std::vector<float> raw_features;
+    // Print return code and how long it took to perform inference
+    printf("run_classifier returned: %d\r\n", res);
+    printf("Timing: DSP %d ms, inference %d ms, anomaly %d ms\r\n", 
+            result.timing.dsp, 
+            result.timing.classification, 
+            result.timing.anomaly);
 
-    while (std::getline(ss, token, ',')) {
-        raw_features.push_back(std::stof(trim(token)));
-    }
-
-    if (raw_features.size() != EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE) {
-        printf("The size of your 'features' array is not correct. Expected %d items, but had %lu\n",
-            EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE, raw_features.size());
-        return 1;
-    }
-
-    ei_impulse_result_t result;
-
-    signal_t signal;
-    numpy::signal_from_buffer(&raw_features[0], raw_features.size(), &signal);
-
-    EI_IMPULSE_ERROR res = run_classifier(&signal, &result, true);
-    printf("run_classifier returned: %d\n", res);
-
-    printf("Begin output\n");
-
+    // Print the prediction results (object detection)
 #if EI_CLASSIFIER_OBJECT_DETECTION == 1
-    for (size_t ix = 0; ix < EI_CLASSIFIER_OBJECT_DETECTION_COUNT; ix++) {
-        auto bb = result.bounding_boxes[ix];
+    printf("Object detection bounding boxes:\r\n");
+    for (uint32_t i = 0; i < EI_CLASSIFIER_OBJECT_DETECTION_COUNT; i++) {
+        ei_impulse_result_bounding_box_t bb = result.bounding_boxes[i];
         if (bb.value == 0) {
             continue;
         }
+        printf("  %s (%f) [ x: %u, y: %u, width: %u, height: %u ]\r\n", 
+                bb.label, 
+                bb.value, 
+                bb.x, 
+                bb.y, 
+                bb.width, 
+                bb.height);
+    }
 
-        printf("%s (%f) [ x: %u, y: %u, width: %u, height: %u ]\n", bb.label, bb.value, bb.x, bb.y, bb.width, bb.height);
-    }
+    // Print the prediction results (classification)
 #else
-    // print the predictions
-    printf("[");
-    for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
-        printf("%.5f", result.classification[ix].value);
-#if EI_CLASSIFIER_HAS_ANOMALY == 1
-        printf(", ");
-#else
-        if (ix != EI_CLASSIFIER_LABEL_COUNT - 1) {
-            printf(", ");
-        }
-#endif
+    printf("Predictions:\r\n");
+    for (uint16_t i = 0; i < EI_CLASSIFIER_LABEL_COUNT; i++) {
+        printf("  %s: ", ei_classifier_inferencing_categories[i]);
+        printf("%.5f\r\n", result.classification[i].value);
     }
-#if EI_CLASSIFIER_HAS_ANOMALY == 1
-    printf("%.3f", result.anomaly);
-#endif
-    printf("]\n");
 #endif
 
-    printf("End output\n");
+    // Print anomaly result (if it exists)
+#if EI_CLASSIFIER_HAS_ANOMALY == 1
+    printf("Anomaly prediction: %.3f\r\n", result.anomaly);
+#endif
+
+    return 0;
+}
+
+// Callback: fill a section of the out_ptr buffer when requested
+static int get_signal_data(size_t offset, size_t length, float *out_ptr) {
+    for (size_t i = 0; i < length; i++) {
+        out_ptr[i] = (features + offset)[i];
+    }
+
+    return EIDSP_OK;
 }
