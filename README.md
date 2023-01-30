@@ -2,6 +2,8 @@
 
 This builds and runs an exported impulse locally on your machine. See the documentation at [Deploy your model as a C++ library](https://docs.edgeimpulse.com/docs/deploy-your-model-as-a-c-library). There is also a [C version](https://github.com/edgeimpulse/example-standalone-inferencing-c) of this application.
 
+> **No hardware optimization!** This example repository contains the bare minimum example of compiling your impulse, and does not contain hardware optimizations for MPUs or on Linux. See [example-standalone-inferencing-linux](https://github.com/edgeimpulse/example-standalone-inferencing-linux) to compile with optimizations.
+
 ## Basic steps
 
  * Download and unzip your Edge Impulse C++ library into this directory
