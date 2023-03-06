@@ -11,6 +11,7 @@ CXXSOURCES = source/main.cpp
 
 # Search path for header files (current directory)
 CFLAGS += -I.
+CFLAGS += -Iedge-impulse-sdk
 
 # C and C++ Compiler flags
 CFLAGS += -Wall						# Include all warnings
