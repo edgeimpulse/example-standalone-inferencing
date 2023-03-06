@@ -5,7 +5,6 @@
 
 // Raw features copied from test sample
 static const float features[] = {
-    4.7166, -0.2304, -0.6355, 2.3096, -1.0533, 2.9051, 1.8819, 1.0123, 1.4356, 1.6334, 1.4141, 1.3300, 1.7379, 1.5096, 1.3240, 1.3746, 1.1512, 0.9478, 3.6480, -0.3054, -1.1880, 2.6599, 2.2823, 1.3543, 0.7280, 0.6851, -0.0135, 0.5501, 1.3194, 0.9561, 1.5727, 1.4272, 0.9956, 0.7409, -0.2793, 1.2962, 2.0682, 0.6380, 2.1843, 0.9328, 1.5005, 0.0667, 0.9264, 1.3629, 1.4076, 1.3384, 0.7976, 1.3545, 1.2524, 1.0228, 1.0042, 1.2554, -0.7833, 1.3597
 };
 
 int main(int argc, char **argv) {
@@ -41,14 +40,24 @@ int main(int argc, char **argv) {
 
     TfLiteTensor output;
     trained_model_output(0, &output);
-    int8 *data = output.data.int8;
-    auto zero_point = output.params.zero_point;
-    auto scale = output.params.scale;
-    for (uint32_t ix = 0; ix < 4; ix++) {
-        float value = static_cast<float>(data[ix] - zero_point) * scale;
-        printf("%f ", value);
+
+    if (output.type == kTfLiteInt8) {
+        int8 *data = output.data.int8;
+        auto zero_point = output.params.zero_point;
+        auto scale = output.params.scale;
+        for (uint32_t ix = 0; ix < 2; ix++) {
+            float value = static_cast<float>(data[ix] - zero_point) * scale;
+            printf("%f ", value);
+        }
+        printf("\n");
     }
-    printf("\n");
+    else {
+        float *data = output.data.f;
+        for (uint32_t ix = 0; ix < 2; ix++) {
+            printf("%f ", data[ix]);
+        }
+        printf("\n");
+    }
 
     return EIDSP_OK;
 }
