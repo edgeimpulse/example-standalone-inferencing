@@ -14,4 +14,4 @@ This builds and runs an exported impulse locally on your machine. See the docume
 
  ## License
 
- [Appache License v2.0](https://www.apache.org/licenses/LICENSE-2.0)
+ [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0)
