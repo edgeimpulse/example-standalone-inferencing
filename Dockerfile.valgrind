@@ -1,0 +1,8 @@
+# syntax = docker/dockerfile:experimental
+FROM ubuntu:20.04
+
+WORKDIR /app
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt install -y build-essential wget curl valgrind lldb
