@@ -6,12 +6,35 @@ This builds and runs an exported impulse locally on your machine. See the docume
 
 ## Basic steps
 
- * Download and unzip your Edge Impulse C++ library into this directory
- * Copy a test sample's *raw features* into the `features[]` array in *source/main.cpp*
- * Enter `make -j` in this directory to compile the project
- * Enter `./build/app` to run the application
- * Compare the output predictions to the predictions of the test sample in the Edge Impulse Studio
+* Download and unzip your Edge Impulse C++ library into this directory
+* Copy a test sample's *raw features* into the `features[]` array in *source/main.cpp*
+* Enter `make -j` in this directory to compile the project
+* Enter `./build/app` to run the application
+* Compare the output predictions to the predictions of the test sample in the Edge Impulse Studio
 
- ## License
+## License
 
- [Appache License v2.0](https://www.apache.org/licenses/LICENSE-2.0)
+[Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Debugging w/ Valgrind
+
+Build the container:
+
+```
+$ docker build -t standalone-valgrind -f Dockerfile.valgrind .
+```
+
+Build the application, and run in valgrind from inside the container:
+
+```
+$ docker run --privileged -it --rm -v $PWD:/app -v ~/repos/edgeimpulse/edge-impulse-sdk:/app/edge-impulse-sdk standalone-valgrind /bin/bash
+
+# Inside the container
+$ make -j
+$ rm -f source/*.o && \
+    make -j && \
+    valgrind --leak-check=full \
+    --show-leak-kinds=all \
+    --track-origins=yes \
+    ./build/app
+```
