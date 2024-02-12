@@ -69,8 +69,25 @@ int main(int argc, char **argv) {
 #endif
 
     // Print anomaly result (if it exists)
-#if EI_CLASSIFIER_HAS_ANOMALY == 1
+#if EI_CLASSIFIER_HAS_ANOMALY
     ei_printf("Anomaly prediction: %.3f\r\n", result.anomaly);
+#endif
+
+#if EI_CLASSIFIER_HAS_VISUAL_ANOMALY
+    ei_printf("Visual anomalies:\r\n");
+    for (uint32_t i = 0; i < result.visual_ad_count; i++) {
+        ei_impulse_result_bounding_box_t bb = result.visual_ad_grid_cells[i];
+        if (bb.value == 0) {
+            continue;
+        }
+        ei_printf("  %s (%f) [ x: %u, y: %u, width: %u, height: %u ]\r\n",
+                bb.label,
+                bb.value,
+                bb.x,
+                bb.y,
+                bb.width,
+                bb.height);
+    }
 #endif
 
     return 0;
