@@ -88,6 +88,8 @@ int main(int argc, char **argv) {
                 bb.width,
                 bb.height);
     }
+    ei_printf("Visual anomaly values: Mean : %.3f Max : %.3f\r\n",
+    result.visual_ad_result.max_value, result.visual_ad_result.mean_value);
 #endif
 
     return 0;
