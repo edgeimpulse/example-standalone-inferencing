@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 #endif
 
     // Print anomaly result (if it exists)
-#if EI_CLASSIFIER_HAS_ANOMALY == 1
+#if EI_CLASSIFIER_HAS_ANOMALY
     ei_printf("Anomaly prediction: %.3f\r\n", result.anomaly);
 #endif
 
