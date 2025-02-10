@@ -11,7 +11,3 @@ This builds and runs an exported impulse locally on your machine. See the docume
  * Enter `make -j` in this directory to compile the project. If you encounter any OOM memory error try `make -j4` (replace 4 with the number of cores available)
  * Enter `./build/app` to run the application
  * Compare the output predictions to the predictions of the test sample in the Edge Impulse Studio
-
- ## License
-
- [Apache License v2.0](https://www.apache.org/licenses/LICENSE-2.0)
