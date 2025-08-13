@@ -1,10 +1,5 @@
 #include <stdio.h>
-
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"
-
-// Callback function declaration
-static int get_signal_data_impulse_1(size_t offset, size_t length, float *out_ptr);
-static int get_signal_data_impulse_2(size_t offset, size_t length, float *out_ptr);
 
 // Raw features copied from test sample
 static const float features_impulse_1[] = {
@@ -79,7 +74,7 @@ static void print_results(const ei_impulse_t *impulse, ei_impulse_result_t *resu
 }
 
 int main(int argc, char **argv) {
-
+    // impulse 1
     {
         signal_t signal;            // Wrapper for raw input buffer
         ei_impulse_result_t result; // Used to store inference output
@@ -102,9 +97,11 @@ int main(int argc, char **argv) {
             return 1;
         }
 
-        // Assign callback function to fill buffer used for preprocessing/inference
-        signal.total_length = impulse.dsp_input_frame_size;
-        signal.get_data = &get_signal_data_impulse_1;
+        int err = numpy::signal_from_buffer(features_impulse_1, impulse.dsp_input_frame_size, &signal);
+        if (err != 0) {
+            ei_printf("signal_from_buffer failed (%d)\n", err);
+            return 1;
+        }
 
         // Perform DSP pre-processing and inference
         res = run_classifier(&impulse_handle, &signal, &result, false);
@@ -114,6 +111,7 @@ int main(int argc, char **argv) {
         print_results(&impulse, &result);
     }
 
+    // impulse 2
     {
         signal_t signal;            // Wrapper for raw input buffer
         ei_impulse_result_t result; // Used to store inference output
@@ -136,9 +134,11 @@ int main(int argc, char **argv) {
             return 1;
         }
 
-        // Assign callback function to fill buffer used for preprocessing/inference
-        signal.total_length = impulse.dsp_input_frame_size;
-        signal.get_data = &get_signal_data_impulse_2;
+        int err = numpy::signal_from_buffer(features_impulse_2, impulse.dsp_input_frame_size, &signal);
+        if (err != 0) {
+            ei_printf("signal_from_buffer failed (%d)\n", err);
+            return 1;
+        }
 
         // Perform DSP pre-processing and inference
         res = run_classifier(&impulse_handle, &signal, &result, false);
@@ -147,21 +147,4 @@ int main(int argc, char **argv) {
 
         print_results(&impulse, &result);
     }
-}
-
-// Callback: fill a section of the out_ptr buffer when requested
-static int get_signal_data_impulse_1(size_t offset, size_t length, float *out_ptr) {
-    for (size_t i = 0; i < length; i++) {
-        out_ptr[i] = (features_impulse_1 + offset)[i];
-    }
-
-    return EIDSP_OK;
-}
-
-static int get_signal_data_impulse_2(size_t offset, size_t length, float *out_ptr) {
-    for (size_t i = 0; i < length; i++) {
-        out_ptr[i] = (features_impulse_2 + offset)[i];
-    }
-
-    return EIDSP_OK;
 }
