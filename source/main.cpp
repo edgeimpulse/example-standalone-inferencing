@@ -19,7 +19,11 @@ int main(int argc, char **argv) {
         freeform_outputs.emplace_back(ei_default_impulse.impulse->freeform_outputs[ix], 1);
     }
 
-    result.freeform_outputs = freeform_outputs.data();
+    res = ei_set_freeform_output(&ei_default_impulse, freeform_outputs.data(), freeform_outputs.size());
+    if (res != EI_IMPULSE_OK) {
+        ei_printf("ei_set_freeform_output failed (%d)\n", res);
+        return 1;
+    }
 
     // Calculate the length of the buffer
     size_t buf_len = sizeof(features) / sizeof(features[0]);
