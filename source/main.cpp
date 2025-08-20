@@ -28,6 +28,8 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    run_classifier_init();
+
     // Assign callback function to fill buffer used for preprocessing/inference
     signal.total_length = EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE;
     signal.get_data = &get_signal_data;
@@ -42,8 +44,19 @@ int main(int argc, char **argv) {
             result.timing.classification,
             result.timing.anomaly);
 
+#if EI_CLASSIFIER_OBJECT_TRACKING_ENABLED == 1
+    // Print the prediction results (object tracking)
+    printf("Object tracking results:\n");
+    for (uint32_t ix = 0; ix < result.postprocessed_output.object_tracking_output.open_traces_count; ix++) {
+        ei_object_tracking_trace_t trace = result.postprocessed_output.object_tracking_output.open_traces[ix];
+        printf("  %s (ID %d) [ x: %u, y: %u, width: %u, height: %u ]\n", trace.label, (int)trace.id, trace.x, trace.y, trace.width, trace.height);
+    }
+
+    if (result.postprocessed_output.object_tracking_output.open_traces_count == 0) {
+        printf("    No objects found\n");
+    }
+#elif EI_CLASSIFIER_OBJECT_DETECTION == 1
     // Print the prediction results (object detection)
-#if EI_CLASSIFIER_OBJECT_DETECTION == 1
     ei_printf("Object detection bounding boxes:\r\n");
     for (uint32_t i = 0; i < result.bounding_boxes_count; i++) {
         ei_impulse_result_bounding_box_t bb = result.bounding_boxes[i];

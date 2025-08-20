@@ -7,3 +7,7 @@ edge-impulse-sdk/
 CMakeLists.txt
 deploy.zip
 *.o
+analyze-eon-*.js
+*.py
+.venv/
+edge-impulse-sdk
