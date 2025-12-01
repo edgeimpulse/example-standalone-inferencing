@@ -1,5 +1,4 @@
 #include <stdio.h>
-
 #include "edge-impulse-sdk/classifier/ei_run_classifier.h"
 
 // Callback function declaration
@@ -7,7 +6,7 @@ static int get_signal_data(size_t offset, size_t length, float *out_ptr);
 
 // Raw features copied from test sample
 static const float features[] = {
-    // Copy raw features here (e.g. from the 'Model testing' page)
+    // Copy raw features here (e.g. from the 'Live classification' page)
 };
 
 int main(int argc, char **argv) {
@@ -30,6 +29,16 @@ int main(int argc, char **argv) {
 
     run_classifier_init();
 
+#if EI_CLASSIFIER_FREEFORM_OUTPUT
+    // for "freeform" outputs, the application needs to allocate the memory (one matrix_t per output tensor)
+    std::vector<matrix_t> freeform_outputs;
+    freeform_outputs.reserve(ei_default_impulse.impulse->freeform_outputs_size);
+    for (size_t ix = 0; ix < ei_default_impulse.impulse->freeform_outputs_size; ++ix) {
+        freeform_outputs.emplace_back(ei_default_impulse.impulse->freeform_outputs[ix], 1);
+    }
+    ei_set_freeform_output(freeform_outputs.data(), freeform_outputs.size());
+#endif // EI_CLASSIFIER_FREEFORM_OUTPUT
+
     // Assign callback function to fill buffer used for preprocessing/inference
     signal.total_length = EI_CLASSIFIER_DSP_INPUT_FRAME_SIZE;
     signal.get_data = &get_signal_data;
@@ -39,71 +48,12 @@ int main(int argc, char **argv) {
 
     // Print return code and how long it took to perform inference
     ei_printf("run_classifier returned: %d\r\n", res);
-    ei_printf("Timing: DSP %d ms, inference %d ms, anomaly %d ms\r\n",
-            result.timing.dsp,
-            result.timing.classification,
-            result.timing.anomaly);
-
-#if EI_CLASSIFIER_OBJECT_TRACKING_ENABLED == 1
-    // Print the prediction results (object tracking)
-    printf("Object tracking results:\n");
-    for (uint32_t ix = 0; ix < result.postprocessed_output.object_tracking_output.open_traces_count; ix++) {
-        ei_object_tracking_trace_t trace = result.postprocessed_output.object_tracking_output.open_traces[ix];
-        printf("  %s (ID %d) [ x: %u, y: %u, width: %u, height: %u ]\n", trace.label, (int)trace.id, trace.x, trace.y, trace.width, trace.height);
+    if (res != 0) {
+        return 1;
     }
 
-    if (result.postprocessed_output.object_tracking_output.open_traces_count == 0) {
-        printf("    No objects found\n");
-    }
-#elif EI_CLASSIFIER_OBJECT_DETECTION == 1
-    // Print the prediction results (object detection)
-    ei_printf("Object detection bounding boxes:\r\n");
-    for (uint32_t i = 0; i < result.bounding_boxes_count; i++) {
-        ei_impulse_result_bounding_box_t bb = result.bounding_boxes[i];
-        if (bb.value == 0) {
-            continue;
-        }
-        ei_printf("  %s (%f) [ x: %u, y: %u, width: %u, height: %u ]\r\n",
-                bb.label,
-                bb.value,
-                bb.x,
-                bb.y,
-                bb.width,
-                bb.height);
-    }
-
-    // Print the prediction results (classification)
-#else
-    ei_printf("Predictions:\r\n");
-    for (uint16_t i = 0; i < EI_CLASSIFIER_LABEL_COUNT; i++) {
-        ei_printf("  %s: ", ei_classifier_inferencing_categories[i]);
-        ei_printf("%.5f\r\n", result.classification[i].value);
-    }
-#endif
-
-    // Print anomaly result (if it exists)
-#if EI_CLASSIFIER_HAS_ANOMALY
-    ei_printf("Anomaly prediction: %.3f\r\n", result.anomaly);
-#endif
-
-#if EI_CLASSIFIER_HAS_VISUAL_ANOMALY
-    ei_printf("Visual anomalies:\r\n");
-    for (uint32_t i = 0; i < result.visual_ad_count; i++) {
-        ei_impulse_result_bounding_box_t bb = result.visual_ad_grid_cells[i];
-        if (bb.value == 0) {
-            continue;
-        }
-        ei_printf("  %s (%f) [ x: %u, y: %u, width: %u, height: %u ]\r\n",
-                bb.label,
-                bb.value,
-                bb.x,
-                bb.y,
-                bb.width,
-                bb.height);
-    }
-    ei_printf("Visual anomaly values: Mean : %.3f Max : %.3f\r\n",
-    result.visual_ad_result.mean_value, result.visual_ad_result.max_value);
-#endif
+    // See edge-impulse-sdk/classifier/ei_print_results.h
+    ei_print_results(&ei_default_impulse, &result);
 
     return 0;
 }
