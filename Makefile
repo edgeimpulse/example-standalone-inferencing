@@ -18,6 +18,7 @@ CFLAGS += -g						# Generate GDB debugger information
 CFLAGS += -Wno-strict-aliasing		# Disable warnings about strict aliasing
 CFLAGS += -Os						# Optimize for size
 CFLAGS += -DNDEBUG					# Disable assert() macro
+CFLAGS += -DEIDSP_LOAD_CMSIS_DSP_SOURCES=1
 
 # C++ only compiler flags
 CXXFLAGS += -std=c++11				# Use C++11 standard
